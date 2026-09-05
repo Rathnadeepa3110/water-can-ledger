@@ -53,26 +53,20 @@ function HistoryPage() {
     return { start: from, end: to };
   }, [filter, anchor, from, to]);
 
-  const rows = useMemo(
-    () =>
-      sortTxns(
-        data.txns.filter(
-          (t) =>
-            (company === "all" || t.customerId === company) &&
-            (company !== "all" || (t.date >= range.start && t.date <= range.end)) &&
-            (company === "all" || true),
-        ),
-      )
-        .filter((t) =>
-          company === "all" ? true : t.date >= range.start && t.date <= range.end,
-        )
-        .reverse()
-        .map((t) => ({
-          t,
-          name: data.customers.find((c) => c.id === t.customerId)?.name ?? "—",
-        })),
-    [data, range, company],
-  );
+  // "All companies" respects the day/week/month range.
+  // A specific company shows its complete history.
+  const rows = useMemo(() => {
+    const list =
+      company === "all"
+        ? data.txns.filter((t) => t.date >= range.start && t.date <= range.end)
+        : data.txns.filter((t) => t.customerId === company);
+    return sortTxns(list)
+      .reverse()
+      .map((t) => ({
+        t,
+        name: data.customers.find((c) => c.id === t.customerId)?.name ?? "—",
+      }));
+  }, [data, range, company]);
 
   const totals = rows.reduce(
     (acc, { t }) => ({
