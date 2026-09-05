@@ -27,6 +27,7 @@ function addDays(iso: string, n: number) {
 
 function HistoryPage() {
   const data = useData();
+  const [company, setCompany] = useState<string>("all");
   const [filter, setFilter] = useState<Filter>("day");
   const [anchor, setAnchor] = useState(todayISO());
   const [from, setFrom] = useState(addDays(todayISO(), -7));
@@ -54,13 +55,23 @@ function HistoryPage() {
 
   const rows = useMemo(
     () =>
-      sortTxns(data.txns.filter((t) => t.date >= range.start && t.date <= range.end))
+      sortTxns(
+        data.txns.filter(
+          (t) =>
+            (company === "all" || t.customerId === company) &&
+            (company !== "all" || (t.date >= range.start && t.date <= range.end)) &&
+            (company === "all" || true),
+        ),
+      )
+        .filter((t) =>
+          company === "all" ? true : t.date >= range.start && t.date <= range.end,
+        )
         .reverse()
         .map((t) => ({
           t,
           name: data.customers.find((c) => c.id === t.customerId)?.name ?? "—",
         })),
-    [data, range],
+    [data, range, company],
   );
 
   const totals = rows.reduce(
