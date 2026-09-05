@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CompanySelect } from "@/components/CompanySelect";
+import { ExportExcel } from "@/components/ExportExcel";
 import { QtyStepper } from "@/components/QtyStepper";
 import { RATES, addTxn, rupees, todayISO, useData } from "@/lib/store";
 
@@ -24,7 +25,7 @@ export function DeliveryForm({
   const { customers } = useData();
   const [date, setDate] = useState(todayISO());
   const [customerId, setCustomerId] = useState<string | null>(lockedCustomerId ?? null);
-  const [cans, setCans] = useState(10);
+  const [cans, setCans] = useState(0);
   const [returned, setReturned] = useState(0);
   const [showReturns, setShowReturns] = useState(false);
   const [rate, setRate] = useState(30);
@@ -59,7 +60,7 @@ export function DeliveryForm({
     });
     if (payment > 0) addTxn({ customerId, date, type: "payment", amount: payment });
     toast.success(`Saved ${cans} cans — ${rupees(amount)}`);
-    setCans(10);
+    setCans(0);
     setReturned(0);
     setPayNow("");
     if (!lockedCustomerId) setCustomerId(null);
@@ -150,6 +151,8 @@ export function DeliveryForm({
           + Add returned cans
         </button>
       )}
+
+      {!lockedCustomerId && <ExportExcel defaultCompanyId={customerId} />}
 
       <Button className="h-12 w-full text-base" onClick={save}>
         Save entry
