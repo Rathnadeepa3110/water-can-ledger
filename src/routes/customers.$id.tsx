@@ -184,6 +184,7 @@ function CustomerLedger() {
     return { t, balance: running };
   });
   rows.reverse();
+  const deliveries = [...txns].filter((t) => t.type === "delivery").reverse();
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
@@ -233,6 +234,47 @@ function CustomerLedger() {
             + Add Payment
           </Button>
         </div>
+      </div>
+
+      <h2 className="mt-8 text-lg font-semibold">Delivered history</h2>
+      <div className="mt-3 overflow-x-auto rounded-lg border border-border bg-card">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-border text-left text-muted-foreground">
+              <th className="px-4 py-3 font-medium">Date</th>
+              <th className="px-4 py-3 font-medium">Day</th>
+              <th className="px-4 py-3 text-right font-medium">Cans delivered</th>
+              <th className="px-4 py-3 text-right font-medium">Cans returned</th>
+              <th className="px-4 py-3 text-right font-medium">Rate</th>
+              <th className="px-4 py-3 text-right font-medium">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {deliveries.map((t) => (
+              <tr key={t.id} className="border-b border-border last:border-0">
+                <td className="px-4 py-3 whitespace-nowrap">{shortDate(t.date)}</td>
+                <td className="px-4 py-3 whitespace-nowrap">
+                  {new Date(`${t.date}T00:00:00`).toLocaleDateString("en-IN", {
+                    weekday: "short",
+                  })}
+                </td>
+                <td className="px-4 py-3 text-right tabular-nums">{t.cans ?? 0}</td>
+                <td className="px-4 py-3 text-right tabular-nums">{t.cansReturned ?? 0}</td>
+                <td className="px-4 py-3 text-right tabular-nums">
+                  {t.rate ? `₹${t.rate}` : "—"}
+                </td>
+                <td className="px-4 py-3 text-right tabular-nums">{rupees(t.amount)}</td>
+              </tr>
+            ))}
+            {deliveries.length === 0 && (
+              <tr>
+                <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
+                  No deliveries yet
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
       <h2 className="mt-8 text-lg font-semibold">Transaction history</h2>
