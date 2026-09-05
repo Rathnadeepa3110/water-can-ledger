@@ -19,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { PageNav } from "@/components/PageNav";
 import { RATES, addCustomer, pendingFor, rupees, useData } from "@/lib/store";
 
 export const Route = createFileRoute("/customers/")({
@@ -210,6 +211,8 @@ function CustomersPage() {
           </tbody>
         </table>
       </div>
+
+      <PageNav current="/customers" />
     </div>
   );
 }

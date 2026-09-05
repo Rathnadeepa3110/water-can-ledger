@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { DeliveryForm } from "@/components/DeliveryForm";
 import { PaymentForm } from "@/components/PaymentForm";
+import { PageNav } from "@/components/PageNav";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
@@ -45,6 +46,8 @@ function DailyEntry() {
       <div className="mt-4 rounded-lg border border-border bg-card p-5 sm:p-6">
         {tab === "delivery" ? <DeliveryForm /> : <PaymentForm />}
       </div>
+
+      <PageNav current="/" />
     </div>
   );
 }

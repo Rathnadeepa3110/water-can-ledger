@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { daysSince, lastPaymentDate, pendingFor, rupees, shortDate, useData } from "@/lib/store";
+import { PageNav } from "@/components/PageNav";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/pending")({
@@ -114,6 +115,8 @@ function PendingPage() {
           </tbody>
         </table>
       </div>
+
+      <PageNav current="/pending" />
     </div>
   );
 }
