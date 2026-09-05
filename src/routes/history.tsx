@@ -2,6 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { PageNav } from "@/components/PageNav";
 import { rupees, shortDate, sortTxns, todayISO, useData } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
@@ -81,6 +89,25 @@ function HistoryPage() {
     <div className="mx-auto max-w-5xl px-4 py-8">
       <h1 className="text-2xl font-semibold tracking-tight">History</h1>
 
+      <div className="mt-5 max-w-sm space-y-1">
+        <Label htmlFor="h-company" className="text-xs">
+          Company
+        </Label>
+        <Select value={company} onValueChange={setCompany}>
+          <SelectTrigger id="h-company" className="h-10 w-full">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Companies</SelectItem>
+            {data.customers.map((c) => (
+              <SelectItem key={c.id} value={c.id}>
+                {c.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
       <div className="mt-5 flex flex-wrap items-end gap-4">
         <div className="inline-flex rounded-md border border-border p-1">
           {(["day", "week", "month", "custom"] as const).map((f) => (
@@ -142,7 +169,9 @@ function HistoryPage() {
       </div>
 
       <p className="mt-3 text-sm text-muted-foreground">
-        Showing {shortDate(range.start)} to {shortDate(range.end)}
+        {company === "all"
+          ? `Showing ${shortDate(range.start)} to ${shortDate(range.end)}`
+          : "Showing this company's complete history"}
       </p>
 
       <div className="mt-3 overflow-x-auto rounded-lg border border-border bg-card">
@@ -195,6 +224,8 @@ function HistoryPage() {
           </div>
         ))}
       </div>
+
+      <PageNav current="/history" />
     </div>
   );
 }
